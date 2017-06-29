@@ -3,5 +3,5 @@ project(stu)
 
 set(CMAKE_C_STANDARD 99)
 
-set(SOURCE_FILES main.c sort.c hh.c)
+set(SOURCE_FILES main.c sort.c hh.c dd.c)
 add_executable(stu ${SOURCE_FILES})

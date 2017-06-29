@@ -10,6 +10,7 @@ typedef struct Stu {
     double math;
     double English;
     double computer;
+    double avg;
 } Stu;
 
 void printAll();
@@ -32,6 +33,8 @@ int printAverage();
 
 void p(int);
 
+void swapStu(Stu a[], int i, int j);
+int bubbySortStu(Stu a[], int length);
 //学生数目
 int sum = 0;
 //学生数据结构
@@ -41,7 +44,7 @@ int main(int argc, char *argv[]) {
     //功能选项
     int choice;
     while (1) {
-        printf("录入：1；查询：2；修改：3；排序：4；统计：5；退出：0；\n");
+        printf("1.录入；2.查询；3.修改；4.排序；5.统计；0.退出；\n");
         printf("请输入需要的功能项：");
         scanf("%d", &choice);
         switch (choice) {
@@ -53,17 +56,22 @@ int main(int argc, char *argv[]) {
                 inputInfo();
                 break;
             case 2:
+                queryInfo();
                 break;
             case 3:
+                updateInfo();
                 break;
             case 4:
+                printByChinese();
                 break;
             case 5:
+                printAverage();
                 break;
             default:
                 printf("功能选择有误，请重新选择。");
                 continue;
         }
+        printf("======================\n");
     }
 }
 
@@ -87,6 +95,7 @@ int inputInfo() {
         printf("输入计算机成绩:");
         scanf("%lf", &stud[i].computer);
         printf("\n");
+        stud[i].avg = (stud[i].Chinese + stud[i].math + stud[i].English + stud[i].computer) / 4;
         i++;
     }
     printAll();
@@ -103,7 +112,7 @@ void printAll() {
 }
 
 void p(int j) {
-    printf("%d|%d|%s|%.2lf|%.2lf|%.2lf|%.2lf\n", stud[j].mc, stud[j].number, stud[j].name, stud[j].Chinese,
+    printf("%d|%ld|%s|%.2lf|%.2lf|%.2lf|%.2lf\n", stud[j].mc, stud[j].number, stud[j].name, stud[j].Chinese,
            stud[j].math, stud[j].English, stud[j].computer);
 }
 
@@ -113,6 +122,7 @@ int queryInfo() {
     int i;
     printf("输入要查学号的尾号后两位:\n");
     scanf("%d", &endNu);
+    printf("序号|学号|姓名|语文|数学|英语|计算机\n");
     for (i = 0; i < sum; i++) {
         if (stud[i].number % 100 == endNu)
             p(i);
@@ -121,21 +131,60 @@ int queryInfo() {
 }
 
 int printByChinese() {
-    int rang[sum];
-    for(int m=0;m<sum;m++){
-        rang[m]=-1;
+    bubbySortStu(stud,sum);
+    printAll();
+}
+
+int printAverage() {
+    int j = 0;
+    printf("学号|姓名|平均成绩\n");
+    while (j < sum) {
+        printf("%d|%s|%.2lf\n", stud[j].number, stud[j].name, stud[j].avg);
+        j++;
     }
-    for (int i = 0; i < sum; i++) {
-        int count = 0;
-        for (int j = 0; j < sum; j++) {
-            if (stud[i].Chinese <= stud[j].Chinese) count++;
-            while(rang[count] !=-1){
-                count--;
-            }
-            rang[count] = i;
+}
+
+int bubbySortStu(Stu a[], int length) {
+    int i, j;
+    for (i = 0; i < length; i++) {
+        for (j = 1; j < length - i; j++) {
+            if (a[j].Chinese > a[j - 1].Chinese)
+                swapStu(a, j, j - 1);
         }
     }
-    for(int n=0;n<sum;n++){
-        p(rang[n]);
+    return 0;
+}
+void swapStu(Stu a[], int i, int j) {
+    Stu temp=a[i];
+    a[i]=a[j];
+    a[j]=temp;
+}
+int updateInfo(){
+    if (sum == 0) return 1;
+    int endNu;
+    int i;
+    double a[4];
+    printf("输入要修改学号的尾号后两位:\n");
+    scanf("%d", &endNu);
+    printf("输入修改后的语文成绩：\n");
+    scanf("%lf",a);
+    printf("输入修改后的数学成绩：\n");
+    scanf("%lf",a+1);
+    printf("输入修改后的外语成绩：\n");
+    scanf("%lf",a+2);
+    printf("输入修改后的计算机成绩：\n");
+    scanf("%lf",a+3);
+    printf("符合条件的人员修改后的成绩为\n");
+    printf("序号|学号|姓名|语文|数学|英语|计算机\n");
+    for (i = 0; i < sum; i++) {
+        if (stud[i].number % 100 == endNu){
+            stud[i].Chinese=a[0];
+            stud[i].math=a[1];
+            stud[i].English=a[2];
+            stud[i].computer=a[3];
+            stud[i].avg=(a[0]+a[1]+a[2]+a[3])/4;
+            p(i);
+        }
+
     }
 }
